@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
     public float jumpHeight = 3f;
 
-    bool isgrounded;
+    public bool isgrounded;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
         isgrounded = Physics.CheckSphere(groundCheck.position,groundCheckDistance,groundLayer);
         if (isgrounded && velocity.y < 0)
         {
+            velocity = Vector3.zero;
             velocity.y = -2f;
         }
 
@@ -46,6 +47,15 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
+
+        if (!isgrounded)
+        {
+
+            float launchAngle = Input.GetAxis("Vertical") * 30f;
+            velocity.z = Mathf.Sqrt(Mathf.Pow((Time.deltaTime * moveSpeed * transform.forward * Mathf.Cos(launchAngle)).z,2));
+            velocity.y -= (Mathf.Sqrt(Mathf.Pow((Time.deltaTime * moveSpeed * transform.up * Mathf.Sin(launchAngle)).y, 2)));
+        }
+
         cc.Move(velocity * Time.deltaTime);
 
     }
