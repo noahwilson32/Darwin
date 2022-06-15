@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
 
     public float moveSpeed = 12f;
+    public Vector3 moveDirection;
     public CharacterController cc;
 
     public float gravity = -9.81f;
@@ -38,8 +39,8 @@ public class PlayerController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = (transform.right * x) + (transform.forward * z);
-        cc.Move(move * Time.deltaTime * moveSpeed);
+        moveDirection = (transform.right * x) + (transform.forward * z);
+        cc.Move(moveDirection * Time.deltaTime * moveSpeed);
 
         if (Input.GetButtonDown("Jump") && isgrounded)
         {
