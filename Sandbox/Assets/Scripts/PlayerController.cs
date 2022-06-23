@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
 
     public bool isgrounded;
 
+    public Transform rightHandSlot;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,5 +61,12 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(velocity * Time.deltaTime);
 
+    }
+
+    public void PickUpItem(GameObject _item)
+    {
+        GameObject rightItem = Instantiate(_item, rightHandSlot.position, Quaternion.identity);
+        rightItem.transform.Rotate(0f, 0f, 0f);
+        rightItem.transform.parent = this.gameObject.transform;
     }
 }
