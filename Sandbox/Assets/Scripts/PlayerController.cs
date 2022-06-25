@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 3f;
 
     public bool isgrounded;
+    
 
     public Transform rightHandSlot;
 
@@ -65,8 +66,16 @@ public class PlayerController : MonoBehaviour
 
     public void PickUpItem(GameObject _item)
     {
+        Rigidbody theRg;
+        /*
         GameObject rightItem = Instantiate(_item, rightHandSlot.position, Quaternion.identity);
         rightItem.transform.Rotate(0f, 0f, 0f);
         rightItem.transform.parent = this.gameObject.transform;
+        */
+        _item.transform.position = rightHandSlot.position;
+        _item.transform.localRotation = Quaternion.Euler(0f,0f,0f);
+        theRg = _item.GetComponent<Rigidbody>();
+        theRg.useGravity = false;
+        _item.transform.parent = gameObject.transform;
     }
 }
