@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 3f;
 
     public bool isgrounded;
+    public bool itemInRange = false;
+    public GameObject _item;
+    private GameManager gm;
     
 
     public Transform rightHandSlot;
@@ -26,12 +29,13 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        gm = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        rightHandSlot.localPosition = new Vector3(0.34f, 0.47f, 0.71f);
         isgrounded = Physics.CheckSphere(groundCheck.position,groundCheckDistance,groundLayer);
         if (isgrounded && velocity.y < 0)
         {
@@ -62,9 +66,34 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(velocity * Time.deltaTime);
 
+        if (itemInRange == true) 
+        {
+            if (Input.GetKeyDown(KeyCode.E)) 
+            {
+                PickUpItem();
+            }
+        }
+        if (rightHandSlot.transform.childCount > 0) 
+        {
+            if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyDown(KeyCode.E)) 
+            {
+                DropRightItem();
+            }
+        }
+
+    }
+    public void DropRightItem() 
+    {
+        Rigidbody theRg;
+        Transform _item = rightHandSlot.transform.GetChild(0);
+        theRg = _item.GetComponent<Rigidbody>();
+        theRg.useGravity = true;
+        theRg.constraints = RigidbodyConstraints.None;
+        rightHandSlot.transform.DetachChildren();
+        
     }
 
-    public void PickUpItem(GameObject _item)
+    public void PickUpItem()
     {
         Rigidbody theRg;
         /*
@@ -73,9 +102,30 @@ public class PlayerController : MonoBehaviour
         rightItem.transform.parent = this.gameObject.transform;
         */
         _item.transform.position = rightHandSlot.position;
-        _item.transform.localRotation = Quaternion.Euler(0f,0f,0f);
         theRg = _item.GetComponent<Rigidbody>();
         theRg.useGravity = false;
-        _item.transform.parent = gameObject.transform;
+        theRg.constraints = RigidbodyConstraints.FreezePosition;
+        theRg.freezeRotation = true;
+        _item.transform.parent = rightHandSlot.gameObject.transform;
+        _item.transform.localPosition = new Vector3(0f,0f,-.3f);
+        _item.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+        gm.Hide_Item_Pickup_Canvas();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Item") 
+        {
+            itemInRange = true;
+            gm.Show_Item_Pickup_Canvas();
+            _item = other.gameObject;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Item") 
+        {
+            gm.Hide_Item_Pickup_Canvas();
+        }
     }
 }
