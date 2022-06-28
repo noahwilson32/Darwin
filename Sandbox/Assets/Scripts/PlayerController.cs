@@ -25,11 +25,13 @@ public class PlayerController : MonoBehaviour
     
 
     public Transform rightHandSlot;
+    public Animator animRight;
 
     // Start is called before the first frame update
     void Start()
     {
         gm = FindObjectOfType<GameManager>();
+        animRight = animRight.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -79,6 +81,15 @@ public class PlayerController : MonoBehaviour
             {
                 DropRightItem();
             }
+        }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            animRight.SetBool("swingRight", true);
+        }
+        else 
+        {
+            animRight.SetBool("swingRight",false);
         }
 
     }
